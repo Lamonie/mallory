@@ -23,7 +23,6 @@
             overflow: hidden;
         }
 
-        /* Área Principal */
         #main-area {
             flex: 1;
             position: relative;
@@ -32,7 +31,7 @@
             width: 100%;
         }
 
-        /* Tela Inicial */
+        /* --- TELA INICIAL --- */
         #home-screen {
             flex: 1;
             display: flex;
@@ -92,16 +91,52 @@
             margin-top: 40px;
         }
 
+        /* --- MENU NATIVO DO YOUTUBE (NOVO) --- */
+        #yt-menu {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+            width: 100%;
+            background-color: #2c3540;
+        }
+
+        .yt-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        .yt-category-btn {
+            width: 80%;
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .yt-category-btn.news { background-color: #0055ff; }
+        .yt-category-btn.music { background-color: #ff9900; }
+
         /* Navegador (Iframe) */
         #browser-view {
             display: none;
             width: 100%;
             height: 100%;
             border: none;
-            background-color: #000; /* Fundo preto para combinar com vídeos */
+            background-color: #000;
         }
 
-        /* Barra Inferior */
+        /* --- BARRA INFERIOR --- */
         #bottom-bar {
             height: 65px;
             background-color: #1e252d;
@@ -166,47 +201,6 @@
             font-size: 13px;
             font-weight: bold;
         }
-
-        /* Gerenciador de Abas */
-        #tab-manager {
-            position: fixed;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(30, 37, 45, 0.98);
-            z-index: 100;
-            transition: top 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            padding-top: 50px;
-        }
-
-        #tab-manager.active { top: 0; }
-
-        .tab-title { font-size: 26px; font-weight: bold; text-align: center; margin-bottom: 20px; }
-        
-        #tab-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-
-        .tab-item {
-            background-color: #2c3540;
-            padding: 18px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .tab-item.active-tab { border: 2px solid #ff66b2; }
-
-        .tab-url { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; }
-
-        .close-tab-btn { background-color: #ff4444; color: #fff; border: none; border-radius: 8px; padding: 8px 15px; font-weight: bold; margin-left: 10px; }
-
-        .new-tab-btn { background-color: #0055ff; color: #fff; border: none; border-radius: 12px; padding: 18px; font-size: 18px; font-weight: bold; margin-top: 15px; }
-
-        .close-manager-btn { background: none; border: none; color: #fff; padding: 15px; font-size: 16px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -221,7 +215,7 @@
                     <div class="shortcut-icon" style="background-color: #fff; color: #000;">G</div>
                     <span>Search</span>
                 </div>
-                <div class="shortcut" onclick="loadUrl('https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&modestbranding=1&rel=0&playsinline=1')">
+                <div class="shortcut" onclick="openYouTubeMenu()">
                     <div class="shortcut-icon" style="background-color: #ff0000; color: #fff;">Y</div>
                     <span>YouTube</span>
                 </div>
@@ -234,8 +228,14 @@
                     <span>Notícias</span>
                 </div>
             </div>
-
             <div class="snips-badge">✨ Apresentando o Snips!</div>
+        </div>
+
+        <div id="yt-menu">
+            <div class="yt-header">Lamonie Vídeos</div>
+            <button class="yt-category-btn" onclick="loadUrl('https://www.youtube.com/embed/videoseries?list=PLMC9KNkIncKvYin_USF1qoJQnIyMAfRxl&modestbranding=1')">🔥 Músicas em Alta</button>
+            <button class="yt-category-btn news" onclick="loadUrl('https://www.youtube.com/embed/videoseries?list=PL3ZQ5CpNulQldOL3T8g8RNMvqFWAsNtIl&modestbranding=1')">📰 CNN Brasil & Notícias</button>
+            <button class="yt-category-btn music" onclick="loadUrl('https://www.youtube.com/embed/videoseries?list=PL15B1E77EEA92B051&modestbranding=1')">🪗 Top Hits & Forró</button>
         </div>
 
         <iframe id="browser-view" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
@@ -243,65 +243,48 @@
 
     <div id="bottom-bar">
         <button class="nav-btn" onclick="goHome()">🏠</button>
-        
         <div class="search-container">
             <span style="font-size: 16px;">🛡️</span>
             <input type="text" id="url-input" placeholder="Pesquisar ou URL..." autocomplete="off">
             <button class="ai-btn">AI</button>
         </div>
-
-        <button class="nav-btn" onclick="toggleTabManager()">
+        <button class="nav-btn">
             <div class="tab-icon" id="tab-counter">1</div>
         </button>
-        
         <button class="nav-btn">☰</button>
     </div>
 
-    <div id="tab-manager">
-        <div class="tab-title">Abas Abertas</div>
-        <div id="tab-list"></div>
-        <button class="new-tab-btn" onclick="createNewTab()">+ Nova Aba</button>
-        <button class="close-manager-btn" onclick="toggleTabManager()">Voltar ao Navegador</button>
-    </div>
-
     <script>
-        let tabs = [{ id: Date.now(), url: '' }];
-        let activeTabId = tabs[0].id;
-
         const homeScreen = document.getElementById('home-screen');
+        const ytMenu = document.getElementById('yt-menu');
         const browserView = document.getElementById('browser-view');
         const urlInput = document.getElementById('url-input');
-        const tabCounter = document.getElementById('tab-counter');
-        const tabManager = document.getElementById('tab-manager');
-        const tabList = document.getElementById('tab-list');
 
+        // Abre o menu customizado do YouTube
+        function openYouTubeMenu() {
+            homeScreen.style.display = 'none';
+            browserView.style.display = 'none';
+            ytMenu.style.display = 'flex';
+            urlInput.value = 'lamonie://videos';
+        }
+
+        // Carrega o site ou o player de vídeo limpo
         function loadUrl(url) {
             if (!url) return;
             
             let finalUrl = url;
-            
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 finalUrl = `https://www.bing.com/search?q=${encodeURIComponent(url)}`;
             }
 
-            const activeTab = tabs.find(t => t.id === activeTabId);
-            if (activeTab) activeTab.url = finalUrl;
-
-            // Se for link do YouTube, o fundo do Iframe fica preto para ficar mais bonito
-            if(finalUrl.includes('youtube.com')) {
-                browserView.style.backgroundColor = '#000';
-            } else {
-                browserView.style.backgroundColor = '#fff';
-            }
-
             urlInput.value = finalUrl;
             homeScreen.style.display = 'none';
+            ytMenu.style.display = 'none';
             browserView.style.display = 'block';
             browserView.src = finalUrl;
-            tabManager.classList.remove('active');
-            renderTabs();
         }
 
+        // Detecta o botão "Enter" no teclado
         urlInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 loadUrl(this.value);
@@ -309,77 +292,13 @@
             }
         });
 
+        // Volta para a página inicial
         function goHome() {
-            const activeTab = tabs.find(t => t.id === activeTabId);
-            if (activeTab) activeTab.url = '';
-            
             urlInput.value = '';
             browserView.style.display = 'none';
             browserView.src = '';
+            ytMenu.style.display = 'none';
             homeScreen.style.display = 'flex';
-            renderTabs();
-        }
-
-        function toggleTabManager() {
-            renderTabs();
-            tabManager.classList.toggle('active');
-        }
-
-        function renderTabs() {
-            tabCounter.innerText = tabs.length;
-            tabList.innerHTML = '';
-
-            tabs.forEach(tab => {
-                const tabEl = document.createElement('div');
-                tabEl.className = 'tab-item' + (tab.id === activeTabId ? ' active-tab' : '');
-
-                const urlSpan = document.createElement('div');
-                urlSpan.className = 'tab-url';
-                urlSpan.innerText = tab.url || 'Página Inicial (Lamonie)';
-                urlSpan.onclick = () => switchToTab(tab.id);
-
-                const closeBtn = document.createElement('button');
-                closeBtn.className = 'close-tab-btn';
-                closeBtn.innerText = 'X';
-                closeBtn.onclick = () => closeTab(tab.id);
-
-                tabEl.appendChild(urlSpan);
-                tabEl.appendChild(closeBtn);
-                tabList.appendChild(tabEl);
-            });
-        }
-
-        function createNewTab() {
-            const newTab = { id: Date.now(), url: '' };
-            tabs.push(newTab);
-            switchToTab(newTab.id);
-        }
-
-        function switchToTab(id) {
-            activeTabId = id;
-            const activeTab = tabs.find(t => t.id === id);
-            
-            if (activeTab.url === '') {
-                goHome();
-            } else {
-                urlInput.value = activeTab.url;
-                homeScreen.style.display = 'none';
-                browserView.style.display = 'block';
-                browserView.src = activeTab.url;
-            }
-            tabManager.classList.remove('active');
-            renderTabs();
-        }
-
-        function closeTab(id) {
-            if (tabs.length === 1) return;
-            tabs = tabs.filter(t => t.id !== id);
-            
-            if (activeTabId === id) {
-                switchToTab(tabs[0].id);
-            } else {
-                renderTabs();
-            }
         }
     </script>
 </body>

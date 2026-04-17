@@ -5,101 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lamonie Flash</title>
     <style>
-        /* --- RESET E VARIÁVEIS --- */
+        /* --- ESTILOS VISUAIS (CSS) --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        :root {
-            --bg-main: #3b4a5a;
-            --bg-bar: #1e252d;
-            --bg-search: #2c3540;
-            --text-light: #ffffff;
-            --accent-pink: #ff66b2;
-            --accent-blue: #0055ff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-light);
+            background-color: #3b4a5a;
+            color: #ffffff;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* --- ÁREA PRINCIPAL (HOME & IFRAME) --- */
+        /* Área Principal */
         #main-area {
             flex: 1;
             position: relative;
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
+        /* Tela Inicial */
         #home-screen {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 20vh;
-            transition: opacity 0.3s;
+            justify-content: center;
+            width: 100%;
         }
 
         .logo {
-            font-size: 42px;
+            font-size: 48px;
             font-weight: bold;
             letter-spacing: 2px;
             margin-bottom: 50px;
+            text-shadow: 0px 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* Carrossel Horizontal Responsivo para Atalhos */
-        .shortcuts-carousel {
+        .grid {
             display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            width: 100%;
-            padding: 20px;
+            flex-wrap: wrap;
             justify-content: center;
-            scrollbar-width: none; /* Oculta scroll no Firefox */
-        }
-        .shortcuts-carousel::-webkit-scrollbar {
-            display: none; /* Oculta scroll no Chrome/Safari */
+            gap: 20px;
+            width: 90%;
         }
 
         .shortcut {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 70px;
             cursor: pointer;
-            min-width: 70px;
         }
 
         .shortcut-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             margin-bottom: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            transition: transform 0.1s;
         }
 
-        .shortcut-icon:active {
-            transform: scale(0.95);
+        .shortcut-icon:active { transform: scale(0.9); }
+        .shortcut span { font-size: 13px; font-weight: 500; }
+
+        .snips-badge {
+            background-color: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 40px;
         }
 
-        .shortcut span {
-            font-size: 12px;
-        }
-
-        /* O "Motor" do Navegador Web */
+        /* Navegador (Iframe) */
         #browser-view {
             display: none;
             width: 100%;
@@ -108,206 +101,112 @@
             background-color: #fff;
         }
 
-        /* --- TOOLTIP (Snips) --- */
-        .tooltip {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 10;
-        }
-
-        .tooltip button {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* --- BARRA INFERIOR --- */
+        /* Barra Inferior */
         #bottom-bar {
-            height: 60px;
-            background-color: var(--bg-bar);
+            height: 65px;
+            background-color: #1e252d;
             display: flex;
             align-items: center;
             padding: 0 10px;
-            gap: 10px;
-            z-index: 20;
-            padding-bottom: env(safe-area-inset-bottom);
+            justify-content: space-between;
+            border-top: 1px solid #2c3540;
+            padding-bottom: env(safe-area-inset-bottom); /* Suporte para iPhone */
         }
 
         .nav-btn {
             background: none;
             border: none;
-            color: var(--text-light);
-            font-size: 22px;
+            color: #fff;
+            font-size: 24px;
             padding: 10px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .search-container {
             flex: 1;
-            background-color: var(--bg-search);
-            height: 40px;
-            border-radius: 20px;
+            background-color: #2c3540;
+            height: 45px;
+            border-radius: 25px;
             display: flex;
             align-items: center;
-            padding: 0 10px;
-            gap: 8px;
+            padding: 0 12px;
+            margin: 0 8px;
         }
 
         .search-container input {
             flex: 1;
             background: none;
             border: none;
-            color: var(--text-light);
-            font-size: 14px;
+            color: #fff;
+            font-size: 15px;
             outline: none;
+            padding: 0 8px;
         }
 
-        .search-container input::placeholder {
-            color: #999;
-        }
+        .search-container input::placeholder { color: #999; }
 
-        /* Animação Light Sweep no Botão AI */
         .ai-btn {
-            background-color: var(--accent-pink);
+            background-color: #ff66b2;
             color: #fff;
             border: none;
             border-radius: 8px;
-            padding: 4px 8px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ai-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            animation: lightSweep 3s infinite;
-        }
-
-        @keyframes lightSweep {
-            0% { left: -100%; }
-            20% { left: 200%; }
-            100% { left: 200%; }
-        }
-
-        .tab-icon {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--text-light);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 6px 10px;
             font-size: 12px;
             font-weight: bold;
         }
 
-        /* --- GERENCIADOR DE ABAS (MODAL) --- */
+        .tab-icon {
+            width: 26px;
+            height: 26px;
+            border: 2px solid #fff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Gerenciador de Abas */
         #tab-manager {
             position: fixed;
             top: 100%;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--bg-bar);
-            z-index: 30;
-            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: rgba(30, 37, 45, 0.98);
+            z-index: 100;
+            transition: top 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
             padding: 20px;
+            padding-top: 50px;
         }
 
-        #tab-manager.active {
-            top: 0;
-        }
+        #tab-manager.active { top: 0; }
 
-        .tab-manager-header {
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-            margin-top: 20px;
-        }
-
-        #tab-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .tab-title { font-size: 26px; font-weight: bold; text-align: center; margin-bottom: 20px; }
+        
+        #tab-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
         .tab-item {
-            background-color: var(--bg-main);
-            padding: 15px;
+            background-color: #2c3540;
+            padding: 18px;
             border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
+        .tab-item.active-tab { border: 2px solid #ff66b2; }
 
-        .tab-url {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer;
-        }
+        .tab-url { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 16px; }
 
-        .close-tab-btn {
-            background-color: #ff4444;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 10px;
-        }
+        .close-tab-btn { background-color: #ff4444; color: #fff; border: none; border-radius: 8px; padding: 8px 15px; font-weight: bold; margin-left: 10px; }
 
-        .new-tab-btn {
-            background-color: var(--accent-blue);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
+        .new-tab-btn { background-color: #0055ff; color: #fff; border: none; border-radius: 12px; padding: 18px; font-size: 18px; font-weight: bold; margin-top: 15px; }
 
-        .close-manager-btn {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            padding: 15px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
+        .close-manager-btn { background: none; border: none; color: #fff; padding: 15px; font-size: 16px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -317,29 +216,26 @@
         <div id="home-screen">
             <div class="logo">LAMONIE</div>
             
-            <div class="shortcuts-carousel">
+            <div class="grid">
                 <div class="shortcut" onclick="loadUrl('https://www.bing.com')">
                     <div class="shortcut-icon" style="background-color: #fff; color: #000;">G</div>
                     <span>Search</span>
                 </div>
-                <div class="shortcut" onclick="loadUrl('https://m.youtube.com')">
+                <div class="shortcut" onclick="loadUrl('https://www.youtube.com/embed/?modestbranding=1')">
                     <div class="shortcut-icon" style="background-color: #ff0000; color: #fff;">Y</div>
                     <span>YouTube</span>
                 </div>
                 <div class="shortcut" onclick="loadUrl('https://weather.com')">
                     <div class="shortcut-icon" style="background-color: #ff9900; color: #fff;">W</div>
-                    <span>Weather</span>
+                    <span>Clima</span>
                 </div>
-                <div class="shortcut" onclick="loadUrl('https://open.spotify.com')">
-                    <div class="shortcut-icon" style="background-color: #1DB954; color: #fff;">S</div>
-                    <span>Spotify</span>
+                <div class="shortcut" onclick="loadUrl('https://g1.globo.com')">
+                    <div class="shortcut-icon" style="background-color: #0055ff; color: #fff;">N</div>
+                    <span>Notícias</span>
                 </div>
             </div>
 
-            <div class="tooltip" id="snips-tooltip">
-                ✨ Apresentando o Snips!
-                <button onclick="document.getElementById('snips-tooltip').style.display='none'">✕</button>
-            </div>
+            <div class="snips-badge">✨ Apresentando o Snips!</div>
         </div>
 
         <iframe id="browser-view" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
@@ -349,8 +245,8 @@
         <button class="nav-btn" onclick="goHome()">🏠</button>
         
         <div class="search-container">
-            <span style="font-size: 14px;">🛡️</span>
-            <input type="text" id="url-input" placeholder="Procurar em Google" autocomplete="off">
+            <span style="font-size: 16px;">🛡️</span>
+            <input type="text" id="url-input" placeholder="Pesquisar ou URL..." autocomplete="off">
             <button class="ai-btn">AI</button>
         </div>
 
@@ -362,19 +258,18 @@
     </div>
 
     <div id="tab-manager">
-        <div class="tab-manager-header">Abas Abertas</div>
-        <div id="tab-list">
-            </div>
+        <div class="tab-title">Abas Abertas</div>
+        <div id="tab-list"></div>
         <button class="new-tab-btn" onclick="createNewTab()">+ Nova Aba</button>
-        <button class="close-manager-btn" onclick="toggleTabManager()">Voltar</button>
+        <button class="close-manager-btn" onclick="toggleTabManager()">Voltar ao Navegador</button>
     </div>
 
     <script>
-        // Sistema de Estado das Abas
+        // Memória do App
         let tabs = [{ id: Date.now(), url: '' }];
         let activeTabId = tabs[0].id;
 
-        // Elementos do DOM
+        // Pegando elementos da tela
         const homeScreen = document.getElementById('home-screen');
         const browserView = document.getElementById('browser-view');
         const urlInput = document.getElementById('url-input');
@@ -382,52 +277,50 @@
         const tabManager = document.getElementById('tab-manager');
         const tabList = document.getElementById('tab-list');
 
-        // --- NAVEGAÇÃO ---
-
-        // Carrega uma URL na aba ativa
+        // Carregar um Site
         function loadUrl(url) {
             if (!url) return;
             
-            // Tratamento simples de URL vs Pesquisa
             let finalUrl = url;
+            // Se não tiver HTTP, pesquisa no Bing (pois Google bloqueia iframes externos por segurança)
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 finalUrl = `https://www.bing.com/search?q=${encodeURIComponent(url)}`;
-                // Usando Bing no exemplo pois o Google bloqueia iframes (X-Frame-Options)
             }
 
-            // Atualiza o estado da aba ativa
+            // Atualiza a aba atual
             const activeTab = tabs.find(t => t.id === activeTabId);
-            if(activeTab) {
-                activeTab.url = finalUrl;
-            }
+            if (activeTab) activeTab.url = finalUrl;
 
-            // Atualiza a UI
+            // Mostra o site e esconde a Home
             urlInput.value = finalUrl;
             homeScreen.style.display = 'none';
             browserView.style.display = 'block';
             browserView.src = finalUrl;
+            tabManager.classList.remove('active');
+            renderTabs();
         }
 
-        // Detecta o "Enter" na barra de pesquisa
+        // Detectar o botão "Ir" no teclado do celular
         urlInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 loadUrl(this.value);
+                this.blur(); // Esconde o teclado
             }
         });
 
-        // Volta para a página inicial
+        // Botão Home
         function goHome() {
             const activeTab = tabs.find(t => t.id === activeTabId);
-            if(activeTab) activeTab.url = '';
+            if (activeTab) activeTab.url = '';
             
             urlInput.value = '';
             browserView.style.display = 'none';
             browserView.src = '';
             homeScreen.style.display = 'flex';
+            renderTabs();
         }
 
-        // --- GERENCIAMENTO DE ABAS ---
-
+        // --- SISTEMA DE ABAS ---
         function toggleTabManager() {
             renderTabs();
             tabManager.classList.toggle('active');
@@ -439,20 +332,16 @@
 
             tabs.forEach(tab => {
                 const tabEl = document.createElement('div');
-                tabEl.className = 'tab-item';
-                // Destaque visual se for a aba ativa
-                if (tab.id === activeTabId) {
-                    tabEl.style.borderLeft = '4px solid var(--accent-pink)';
-                }
+                tabEl.className = 'tab-item' + (tab.id === activeTabId ? ' active-tab' : '');
 
-                const urlSpan = document.createElement('span');
+                const urlSpan = document.createElement('div');
                 urlSpan.className = 'tab-url';
-                urlSpan.innerText = tab.url || 'Página Inicial';
+                urlSpan.innerText = tab.url || 'Página Inicial (Lamonie)';
                 urlSpan.onclick = () => switchToTab(tab.id);
 
                 const closeBtn = document.createElement('button');
                 closeBtn.className = 'close-tab-btn';
-                closeBtn.innerText = '✕';
+                closeBtn.innerText = 'X';
                 closeBtn.onclick = () => closeTab(tab.id);
 
                 tabEl.appendChild(urlSpan);
@@ -479,17 +368,14 @@
                 browserView.style.display = 'block';
                 browserView.src = activeTab.url;
             }
-            
             tabManager.classList.remove('active');
             renderTabs();
         }
 
         function closeTab(id) {
-            if (tabs.length === 1) return; // Impede fechar a última aba
-            
+            if (tabs.length === 1) return; // Não fecha se for a última aba
             tabs = tabs.filter(t => t.id !== id);
             
-            // Se fechou a aba atual, muda para a primeira disponível
             if (activeTabId === id) {
                 switchToTab(tabs[0].id);
             } else {
@@ -499,4 +385,3 @@
     </script>
 </body>
 </html>
-

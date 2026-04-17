@@ -98,7 +98,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            background-color: #fff;
+            background-color: #000; /* Fundo preto para combinar com vídeos */
         }
 
         /* Barra Inferior */
@@ -110,7 +110,7 @@
             padding: 0 10px;
             justify-content: space-between;
             border-top: 1px solid #2c3540;
-            padding-bottom: env(safe-area-inset-bottom); /* Suporte para iPhone */
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .nav-btn {
@@ -221,7 +221,7 @@
                     <div class="shortcut-icon" style="background-color: #fff; color: #000;">G</div>
                     <span>Search</span>
                 </div>
-                <div class="shortcut" onclick="loadUrl('https://www.youtube.com/embed/?modestbranding=1')">
+                <div class="shortcut" onclick="loadUrl('https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&modestbranding=1&rel=0&playsinline=1')">
                     <div class="shortcut-icon" style="background-color: #ff0000; color: #fff;">Y</div>
                     <span>YouTube</span>
                 </div>
@@ -238,7 +238,7 @@
             <div class="snips-badge">✨ Apresentando o Snips!</div>
         </div>
 
-        <iframe id="browser-view" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+        <iframe id="browser-view" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
     </div>
 
     <div id="bottom-bar">
@@ -265,11 +265,9 @@
     </div>
 
     <script>
-        // Memória do App
         let tabs = [{ id: Date.now(), url: '' }];
         let activeTabId = tabs[0].id;
 
-        // Pegando elementos da tela
         const homeScreen = document.getElementById('home-screen');
         const browserView = document.getElementById('browser-view');
         const urlInput = document.getElementById('url-input');
@@ -277,21 +275,25 @@
         const tabManager = document.getElementById('tab-manager');
         const tabList = document.getElementById('tab-list');
 
-        // Carregar um Site
         function loadUrl(url) {
             if (!url) return;
             
             let finalUrl = url;
-            // Se não tiver HTTP, pesquisa no Bing (pois Google bloqueia iframes externos por segurança)
+            
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 finalUrl = `https://www.bing.com/search?q=${encodeURIComponent(url)}`;
             }
 
-            // Atualiza a aba atual
             const activeTab = tabs.find(t => t.id === activeTabId);
             if (activeTab) activeTab.url = finalUrl;
 
-            // Mostra o site e esconde a Home
+            // Se for link do YouTube, o fundo do Iframe fica preto para ficar mais bonito
+            if(finalUrl.includes('youtube.com')) {
+                browserView.style.backgroundColor = '#000';
+            } else {
+                browserView.style.backgroundColor = '#fff';
+            }
+
             urlInput.value = finalUrl;
             homeScreen.style.display = 'none';
             browserView.style.display = 'block';
@@ -300,15 +302,13 @@
             renderTabs();
         }
 
-        // Detectar o botão "Ir" no teclado do celular
         urlInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 loadUrl(this.value);
-                this.blur(); // Esconde o teclado
+                this.blur();
             }
         });
 
-        // Botão Home
         function goHome() {
             const activeTab = tabs.find(t => t.id === activeTabId);
             if (activeTab) activeTab.url = '';
@@ -320,7 +320,6 @@
             renderTabs();
         }
 
-        // --- SISTEMA DE ABAS ---
         function toggleTabManager() {
             renderTabs();
             tabManager.classList.toggle('active');
@@ -373,7 +372,7 @@
         }
 
         function closeTab(id) {
-            if (tabs.length === 1) return; // Não fecha se for a última aba
+            if (tabs.length === 1) return;
             tabs = tabs.filter(t => t.id !== id);
             
             if (activeTabId === id) {
